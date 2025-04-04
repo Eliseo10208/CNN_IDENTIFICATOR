@@ -562,6 +562,33 @@ class App(tk.Tk):
         else:
             self.log("Error: No hay modelo para guardar.")
 
+# ---- CÓDIGO PARA LA API ----
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    # Cargar el modelo al iniciar cada predicción (asegúrate de que el modelo esté guardado)
+    model, classes, input_shape = cargar_modelo_keras()
+    if model is None:
+        return jsonify({'error': 'Modelo no cargado'}), 500
+
+    if 'imagen' not in request.files:
+        return jsonify({'error': 'No se envió ninguna imagen'}), 400
+
+    archivo = request.files['imagen']
+
+    if archivo.filename == '':
+        return jsonify({'error': 'Nombre de archivo inválido'}), 400
+
+    try:
+        temp_path = 'temp_image.jpg'
+        archivo.save(temp_path)
+        resultados = predecir_imagen_cnn(temp_path, model, classes, input_shape)
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+        return jsonify(resultados)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 # ---- PUNTO DE ENTRADA ----
 
 if __name__ == "__main__":
