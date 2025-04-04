@@ -609,12 +609,13 @@ if __name__ == "__main__":
     # Si se pasa --api como argumento, ejecutar la API
     if len(sys.argv) > 1 and sys.argv[1] == "--api":
         app = crear_app_flask()
-        
+
         if app is not None:
-            app.run(debug=True, host='0.0.0.0', port=5000)
+            port = os.environ.get('PORT', 5000)  # Obtiene el puerto de la variable de entorno, usa 5000 por defecto localmente
+            app.run(debug=True, host='0.0.0.0', port=port)
         else:
             sys.exit(1)
     else:
         # Ejecutar la interfaz gráfica
-        app = App()
-        app.mainloop()
+        app_tk = App()
+        app_tk.mainloop()
