@@ -1,1 +1,1 @@
-web: gunicorn modelo_tkinter:app --bind 0.0.0.0:$PORT --workers 3 --threads 2
+web: gunicorn modelo_tkinter:app --bind 0.0.0.0:$PORT --workers 1 --threads 2
